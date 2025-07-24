@@ -37,6 +37,7 @@ Finally run the consume app
 python consumer.py
 ```
 
+Visiit ```http://localhost:8000/docs```:
 
-Visiit ```http://localhost:8000/token```
+![Image](./assets/image.png)
 

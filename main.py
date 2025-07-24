@@ -1,25 +1,32 @@
-from datetime import datetime, timedelta, timezone
+"""
+FastAPI application with JWT authentication, user management, and middleware for process time logging.
+"""
+
+import os
 from typing import Union, Annotated
+from datetime import datetime, timedelta, timezone
+from dotenv import load_dotenv
 
 import httpx
 import jwt
 from passlib.context import CryptContext
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
 from starlette.middleware.base import BaseHTTPMiddleware
-from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 import uvicorn
 
 
+load_dotenv()
 
-SECRET_KEY="51baef8631a1bf773c10c7e79b06ea54c0d94560b148eeed3e9b2272c9bc3134"
-ALGORITHM="HS256"
+
+SECRET_KEY=os.getenv("SECRET_KEY")
+ALGORITHM=os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-CLIENT_WEBHOOK_URL = "http://localhost:8001/webhook"
 
+CLIENT_WEBHOOK_URL = os.getenv("CLIENT_WEBHOOK_URL")
 
 fake_users_db = {
     "johndoe": {
@@ -60,7 +67,10 @@ class ProcessTimeMiddleware(BaseHTTPMiddleware):
         return response
 
 
-app = FastAPI()
+app = FastAPI(
+    title="FastAPI JWT Auth Demo", 
+    description="A simple FastAPI application with JWT authentication and user management."
+)
 app.add_middleware(ProcessTimeMiddleware)
 app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
 # app.add_middleware(HTTPSRedirectMiddleware)

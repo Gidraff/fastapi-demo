@@ -1,3 +1,4 @@
 pgvenv/
 __pycache__/
 *.pyc
+.env
